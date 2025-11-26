@@ -13,19 +13,19 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-gray-900 p-6 rounded-lg border border-yellow-400">
                     <h3 class="text-lg font-semibold text-yellow-400">Ministères</h3>
-                    <p class="text-4xl font-bold mt-2">12</p>
+                    <p class="text-4xl font-bold mt-2">{{ total_ministries }}</p>
                 </div>
                 <div class="bg-gray-900 p-6 rounded-lg border border-yellow-400">
                     <h3 class="text-lg font-semibold text-yellow-400">Projets Actifs</h3>
-                    <p class="text-4xl font-bold mt-2">34</p>
+                    <p class="text-4xl font-bold mt-2">{{ in_progress_projects }}</p>
                 </div>
                 <div class="bg-gray-900 p-6 rounded-lg border border-yellow-400">
                     <h3 class="text-lg font-semibold text-yellow-400">Projets Complétés</h3>
-                    <p class="text-4xl font-bold mt-2">8</p>
+                    <p class="text-4xl font-bold mt-2">{{ completed_projects }}</p>
                 </div>
                 <div class="bg-gray-900 p-6 rounded-lg border border-yellow-400">
-                    <h3 class="text-lg font-semibold text-yellow-400">Indicateurs</h3>
-                    <p class="text-4xl font-bold mt-2">156</p>
+                    <h3 class="text-lg font-semibold text-yellow-400">Total Projets</h3>
+                    <p class="text-4xl font-bold mt-2">{{ total_projects }}</p>
                 </div>
             </div>
         </div>
@@ -35,34 +35,20 @@
             <div>
                 <h3 class="text-2xl font-bold text-yellow-400 mb-4">Projets Récents</h3>
                 <div class="space-y-2">
-                    
-                    <div class="bg-gray-900 p-4 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
-                        <h4 class="font-semibold">Digitalisation Administration</h4>
-                        <p class="text-sm text-gray-400">Ministère de la Fonction Publique</p>
-                        <div class="mt-2 bg-gray-800 rounded-full h-2">
-                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 75%"></div>
+                    {% if projects %}
+                        {% for project in projects %}
+                        <div class="bg-gray-900 p-4 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
+                            <h4 class="font-semibold"><a href="{% url 'project_detail' pk=project.pk %}" class="hover:text-yellow-400">{{ project.title }}</a></h4>
+                            <p class="text-sm text-gray-400">{{ project.ministry.name }}</p>
+                            <div class="mt-2 bg-gray-800 rounded-full h-2">
+                                <div class="bg-yellow-400 h-2 rounded-full" style="width: {{ project.progress_percentage }}%"></div>
+                            </div>
+                            <p class="text-sm text-gray-300 mt-1">{{ project.progress_percentage }}% complété</p>
                         </div>
-                        <p class="text-sm text-gray-300 mt-1">75% complété</p>
-                    </div>
-
-                    <div class="bg-gray-900 p-4 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
-                        <h4 class="font-semibold">Construction Data Center</h4>
-                        <p class="text-sm text-gray-400">Ministère du Numérique</p>
-                        <div class="mt-2 bg-gray-800 rounded-full h-2">
-                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 30%"></div>
-                        </div>
-                        <p class="text-sm text-gray-300 mt-1">30% complété</p>
-                    </div>
-
-                    <div class="bg-gray-900 p-4 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
-                        <h4 class="font-semibold">Fibre Optique Nationale</h4>
-                        <p class="text-sm text-gray-400">Ministère des Infrastructures</p>
-                        <div class="mt-2 bg-gray-800 rounded-full h-2">
-                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 55%"></div>
-                        </div>
-                        <p class="text-sm text-gray-300 mt-1">55% complété</p>
-                    </div>
-
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-gray-400">Aucun projet disponible.</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -71,20 +57,23 @@
                 <div class="space-y-2">
                     
                     <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
-                        <h4 class="font-semibold">Taux d'exécution Budgétaire</h4>
-                        <p class="text-2xl font-bold text-yellow-400">68%</p>
-                        <p class="text-sm text-gray-400">Moyenne sur l'ensemble des ministères</p>
+                        <h4 class="font-semibold">Progression Moyenne</h4>
+                        <p class="text-2xl font-bold text-yellow-400">{{ avg_progress }}%</p>
+                        <p class="text-sm text-gray-400">Moyenne sur l'ensemble des projets</p>
                     </div>
 
                     <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
                         <h4 class="font-semibold">Projets en retard</h4>
-                        <p class="text-2xl font-bold text-red-500">12</p>
+                        <p class="text-2xl font-bold {% if late_projects > 0 %}text-red-500{% else %}text-green-400{% endif %}">{{ late_projects }}</p>
                         <p class="text-sm text-gray-400">Nécessitant une action immédiate</p>
                     </div>
                      <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
-                        <h4 class="font-semibold">Satisfaction Usagers</h4>
-                        <p class="text-2xl font-bold text-green-400">4.2/5</p>
-                        <p class="text-sm text-gray-400">Basé sur les derniers sondages</p>
+                        <h4 class="font-semibold">Statut des Projets</h4>
+                        <p class="text-sm text-gray-300 mt-2">
+                            <span class="text-yellow-400">En cours: {{ in_progress_projects }}</span> | 
+                            <span class="text-green-400">Complétés: {{ completed_projects }}</span> | 
+                            <span class="text-gray-400">Planifiés: {{ planning_projects }}</span>
+                        </p>
                     </div>
 
                 </div>
