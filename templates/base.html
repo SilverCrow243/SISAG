@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SISAG{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Vos styles personnalisés conservés */
+        body {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: #000;
+            border-bottom: 2px solid #fbbf24;
+        }
+
+        .navbar a {
+            color: #fbbf24;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-yellow-400">SISAG</h1>
+            <ul class="flex gap-4">
+                <li><a href="{% url "dashboard" %}" class="font-bold text-white">Tableau de Bord</a></li>
+                <li><a href="{% url "ministries_list" %}">Ministères</a></li>
+                <li><a href="{% url "projects_list" %}">Projets</a></li>
+                <li><a href="#">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+  {% block content %}
+  {% endblock %}
+    <footer class="bg-gray-900 text-center p-4 mt-8 border-t border-yellow-400">
+        <p>&copy; 2024 SISAG - Ministère de l'Économie Numérique</p>
+    </footer>
+</body>
+</html>
+
