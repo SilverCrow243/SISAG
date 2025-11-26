@@ -8,102 +8,58 @@
             <h2 class="text-3xl font-bold text-yellow-400 mb-6">Projets</h2>
 
             <div class="mb-4 flex gap-2">
-                <a href="#" class="btn-primary">Tous les Projets</a>
-                <a href="#" class="btn-primary">Actifs</a>
-                <a href="#" class="btn-primary">Complétés</a>
+                <a href="{% url 'projects_list' %}" class="btn-primary">Tous les Projets</a>
+                <a href="{% url 'projects_list' %}?status=in_progress" class="btn-primary">En cours</a>
+                <a href="{% url 'projects_list' %}?status=completed" class="btn-primary">Complétés</a>
             </div>
 
             <div class="space-y-4">
                 
-                <div class="bg-gray-900 p-6 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            <h3 class="text-xl font-bold text-yellow-400">Réseau d'Accès Universel</h3>
-                            <p class="text-sm text-gray-400">Ministère des Postes et Télécoms</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-yellow-400 text-black">
-                            Actif
-                        </span>
-                    </div>
-
-                    <p class="text-gray-300 mb-3">Déploiement de 1000 points d'accès internet dans les zones rurales isolées pour réduire la fracture numérique.</p>
-
-                    <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
-                        <div>
-                            <p class="text-gray-400">Budget</p>
-                            <p class="font-semibold text-yellow-400">$12,500,000</p>
-                        </div>
-                        <div>
-                            <p class="text-gray-400">Progrès</p>
-                            <div class="bg-gray-800 rounded-full h-2 mt-1">
-                                <div class="bg-yellow-400 h-2 rounded-full" style="width: 60%"></div>
+                {% if projects %}
+                    {% for project in projects %}
+                    <div class="bg-gray-900 p-6 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-xl font-bold text-yellow-400">{{ project.title }}</h3>
+                                <p class="text-sm text-gray-400">{{ project.ministry.name }}</p>
                             </div>
-                            <p class="text-white">60%</p>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold 
+                                {% if project.status == 'in_progress' %}
+                                    bg-yellow-400 text-black
+                                {% elif project.status == 'completed' %}
+                                    bg-green-600 text-white
+                                {% elif project.status == 'planning' %}
+                                    bg-gray-600 text-white
+                                {% else %}
+                                    bg-orange-600 text-white
+                                {% endif %}
+                            ">
+                                {{ project.get_status_display }}
+                            </span>
                         </div>
-                    </div>
 
-                    <a href="project_detail.html" class="btn-primary">Voir Détails</a>
-                </div>
+                        <p class="text-gray-300 mb-3">{{ project.description|truncatewords:30 }}</p>
 
-                <div class="bg-gray-900 p-6 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            <h3 class="text-xl font-bold text-yellow-400">Réforme du Cadre Fiscal</h3>
-                            <p class="text-sm text-gray-400">Ministère des Finances</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-green-600 text-white">
-                            Complété
-                        </span>
-                    </div>
-
-                    <p class="text-gray-300 mb-3">Simplification des procédures de déclaration et mise en place d'une plateforme de paiement en ligne.</p>
-
-                    <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
-                        <div>
-                            <p class="text-gray-400">Budget</p>
-                            <p class="font-semibold text-yellow-400">$2,800,000</p>
-                        </div>
-                        <div>
-                            <p class="text-gray-400">Progrès</p>
-                            <div class="bg-gray-800 rounded-full h-2 mt-1">
-                                <div class="bg-yellow-400 h-2 rounded-full" style="width: 100%"></div>
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div>
+                                <p class="text-gray-400">Budget</p>
+                                <p class="font-semibold text-yellow-400">{% if project.budget %}${{ project.budget|floatformat:0 }}{% else %}N/A{% endif %}</p>
                             </div>
-                            <p class="text-white">100%</p>
-                        </div>
-                    </div>
-
-                    <a href="project_detail.html" class="btn-primary">Voir Détails</a>
-                </div>
-                
-                <div class="bg-gray-900 p-6 rounded-lg border border-gray-700 hover:border-yellow-400 transition duration-300">
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            <h3 class="text-xl font-bold text-yellow-400">Programme de Vaccination National</h3>
-                            <p class="text-sm text-gray-400">Ministère de la Santé Publique</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-600 text-white">
-                            Planifié
-                        </span>
-                    </div>
-
-                    <p class="text-gray-300 mb-3">Acquisition et distribution de vaccins pour les populations vulnérables avant la prochaine saison des pluies.</p>
-
-                    <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
-                        <div>
-                            <p class="text-gray-400">Budget</p>
-                            <p class="font-semibold text-yellow-400">$8,000,000</p>
-                        </div>
-                        <div>
-                            <p class="text-gray-400">Progrès</p>
-                            <div class="bg-gray-800 rounded-full h-2 mt-1">
-                                <div class="bg-yellow-400 h-2 rounded-full" style="width: 5%"></div>
+                            <div>
+                                <p class="text-gray-400">Progrès</p>
+                                <div class="bg-gray-800 rounded-full h-2 mt-1">
+                                    <div class="bg-yellow-400 h-2 rounded-full" style="width: {{ project.progress_percentage }}%"></div>
+                                </div>
+                                <p class="text-white">{{ project.progress_percentage }}%</p>
                             </div>
-                            <p class="text-white">5%</p>
                         </div>
-                    </div>
 
-                    <a href="project_detail.html" class="btn-primary">Voir Détails</a>
-                </div>
+                        <a href="{% url 'project_detail' pk=project.pk %}" class="btn-primary">Voir Détails</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-400">Aucun projet trouvé.</p>
+                {% endif %}
 
             </div>
         </div>
